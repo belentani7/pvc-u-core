@@ -1,0 +1,47 @@
+services:
+  pvc-u-api:
+    build: .
+    container_name: pvc-u-api
+    ports:
+      - "8000:8000"
+    environment:
+      PVC_U_DB_URL: postgresql+psycopg2://pvcu:pvcu_secret@postgres:5432/pvcu_db
+      PVC_U_LLAM_BASE_URL: http://litellm:4000/v1
+      PVC_U_LL_API_KEY: not-needed
+      PVC_U_AUTO_CORRECTION: "true"
+    depends_on:
+      - postgres
+      - litellm
+    restart: unless-stopped
+
+  postgres:
+    image: postgres:16-alpine
+    container_name: pvc-u-postgres
+    environment:
+      POSTGRES_USER: pvcu
+      POSTGRES_PASSWORD: pvcu_secret
+      POSTGRES_DB: pvcu_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - pvcu-data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+  litellm:
+    image: ghcr.io/berriai/litellm:main
+    container_name: pvc-u-litellm
+    ports:
+      - "4000:4000"
+    command: >
+      --config /app/config.yaml
+    volumes:
+      - ./litellm-config.yaml:/app/config.yaml:ro
+    environment:
+      GROQ_API_KEY: ${GROQ_API_KEY:-not-needed}
+      CEREBRAS_API_KEY: ${CEREBRAS_API_KEY:-not-needed}
+      SAMBANOVA_API_KEY: ${SAMBANOVA_API_KEY:-not-needed}
+    restart: unless-stopped
+
+volumes:
+  pvcu-data:
+    driver: local
