@@ -19,3 +19,11 @@ Dockerfile
 docker-compose.override.yml
 .vscode/
 .idea/
+
+# BELENTANI legacy — seguridad
+.env.*
+!.env.example
+*.pyc
+node_modules/
+.next/
+.vercel/
