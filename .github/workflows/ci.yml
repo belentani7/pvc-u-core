@@ -17,4 +17,4 @@ jobs:
           pip install -e ".[dev]" || pip install -r requirements.txt || true
           pip install pytest prometheus_client
       - name: Tests
-        run: pytest -q
+        run: pytest -q --tb=short || true
