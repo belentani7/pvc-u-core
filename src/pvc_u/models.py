@@ -39,6 +39,7 @@ class PIIType(str, Enum):
     SSN = "ssn"
     IP_ADDRESS = "ip_address"
     API_KEY = "api_key"
+    JWT = "jwt"
 
 
 class Domain(str, Enum):
